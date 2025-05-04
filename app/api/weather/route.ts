@@ -1,13 +1,13 @@
 // app/api/weather/route.ts
 import { NextResponse } from 'next/server';
 
-// const WINDY_API_KEY = process.env.WINDY_API_KEY;
-const WINDY_API_KEY = process.env.NEXT_PUBLIC_SURF_API_KEY;
-const WINDY_API_ENDPOINT = 'https://api.windy.com/api/point-forecast/v2';
-
 export async function POST(request: Request) {
   try {
     const { latitude, longitude } = await request.json();
+
+    // const WINDY_API_KEY = process.env.WINDY_API_KEY;
+    const WINDY_API_KEY = process.env.NEXT_PUBLIC_SURF_API_KEY;
+    const WINDY_API_ENDPOINT = 'https://api.windy.com/api/point-forecast/v2';
 
     if (!WINDY_API_KEY) {
       throw new Error('Windy API key is not configured');

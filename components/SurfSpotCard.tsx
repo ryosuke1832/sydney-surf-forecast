@@ -49,6 +49,11 @@ export default function SurfSpotCard({ spot }: SurfSpotCardProps) {
   const [weatherData, setWeatherData] = useState<WindyResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+    // components/SurfSpotCard.tsx の最初に追加
+    console.log('Environment variables:', {
+        NODE_ENV: process.env.NODE_ENV,
+        NEXT_PUBLIC_SURF_API_KEY: process.env.NEXT_PUBLIC_SURF_API_KEY
+    });
 
   // 風速と風向を計算
   const calculateWindSpeedAndDirection = (u: number, v: number) => {
@@ -74,7 +79,9 @@ export default function SurfSpotCard({ spot }: SurfSpotCardProps) {
     return directions[index];
   };
 
-  useEffect(() => {
+
+  // components/SurfSpotCard.tsx
+useEffect(() => {
     const fetchWeather = async () => {
       setLoading(true);
       setError(null);
@@ -90,11 +97,11 @@ export default function SurfSpotCard({ spot }: SurfSpotCardProps) {
             longitude: spot.longitude,
           }),
         });
-
+  
         if (!response.ok) {
           throw new Error('Failed to fetch weather data');
         }
-
+  
         const data = await response.json();
         console.log('Received weather data:', data);
         setWeatherData(data);
@@ -105,7 +112,7 @@ export default function SurfSpotCard({ spot }: SurfSpotCardProps) {
         setLoading(false);
       }
     };
-
+  
     fetchWeather();
     const interval = setInterval(fetchWeather, 30 * 60 * 1000);
     
