@@ -49,11 +49,6 @@ export default function SurfSpotCard({ spot }: SurfSpotCardProps) {
   const [weatherData, setWeatherData] = useState<WindyResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-    // components/SurfSpotCard.tsx の最初に追加
-    console.log('Environment variables:', {
-        NODE_ENV: process.env.NODE_ENV,
-        NEXT_PUBLIC_SURF_API_KEY: process.env.NEXT_PUBLIC_SURF_API_KEY
-    });
 
   // 風速と風向を計算
   const calculateWindSpeedAndDirection = (u: number, v: number) => {
@@ -79,9 +74,7 @@ export default function SurfSpotCard({ spot }: SurfSpotCardProps) {
     return directions[index];
   };
 
-
-  // components/SurfSpotCard.tsx
-useEffect(() => {
+  useEffect(() => {
     const fetchWeather = async () => {
       setLoading(true);
       setError(null);
@@ -97,11 +90,11 @@ useEffect(() => {
             longitude: spot.longitude,
           }),
         });
-  
+
         if (!response.ok) {
           throw new Error('Failed to fetch weather data');
         }
-  
+
         const data = await response.json();
         console.log('Received weather data:', data);
         setWeatherData(data);
@@ -112,7 +105,7 @@ useEffect(() => {
         setLoading(false);
       }
     };
-  
+
     fetchWeather();
     const interval = setInterval(fetchWeather, 30 * 60 * 1000);
     
@@ -253,6 +246,16 @@ useEffect(() => {
       {/* 展開時の詳細情報 */}
       {isOpen && weatherData && (
         <div className="border-t border-gray-100 p-4">
+          {/* Windyマップの埋め込み - Wave Detailsの上に配置 */}
+          <div className="mb-6 w-full">
+            <iframe 
+              className="w-full h-[450px] sm:h-[550px] md:h-[600px] rounded-lg"
+              src={`https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=mph&zoom=11&overlay=waves&product=ecmwfWaves&level=surface&lat=${spot.latitude}&lon=${spot.longitude}&detailLat=${spot.latitude}&detailLon=${spot.longitude}&detail=true&lang=en&mobile=true`} 
+              frameBorder="0"
+              title={`Windy Map for ${spot.name}`}
+            />
+          </div>
+          
           {/* 波の詳細情報 */}
           <div className="mb-6">
             <h4 className="mb-3 text-sm font-semibold uppercase tracking-wider text-gray-500">
